@@ -1,6 +1,6 @@
 package main
 
-import "threewordgame"
+import "github.com/gophergala2016/3wordgame"
 
 func main() {
 	threewordgame.SetupFrontend()
