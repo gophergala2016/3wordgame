@@ -3,6 +3,7 @@
 *.o
 *.a
 *.so
+bin/*
 
 # Folders
 _obj
