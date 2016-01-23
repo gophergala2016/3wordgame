@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"github.com/gophergala2016/3wordgame"
 	"net"
 	"os"
 )
@@ -18,21 +19,22 @@ func main() {
 
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", server, port))
 	if err != nil {
-		fmt.Println("Error dialing in.")
+		threewordgame.SetStatus(fmt.Sprintf("Error dialing in."))
+		threewordgame.Exit()
 		os.Exit(-1)
 	}
 
-	fmt.Println("Connected.")
+	threewordgame.SetStatus(fmt.Sprintf("Connected."))
 
 	for {
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 
 		if err != nil {
-			fmt.Printf("Error reading from Stdin.")
+			threewordgame.SetStatus(fmt.Sprintf("Error reading from Stdin."))
 		}
 
 		fmt.Fprintf(conn, input)
 	}
 
-	fmt.Println("Exiting!")
+	threewordgame.SetStatus(fmt.Sprintf("Exiting!"))
 }

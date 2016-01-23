@@ -1,50 +1,50 @@
 package threewordgame
 
-import ui "github.com/gizak/termui"
+import (
+	"fmt"
+	ui "github.com/gizak/termui"
+)
 
-var ui_story *ui.Par
-var ui_input *ui.Par
-var ui_status *ui.Par
-var input_channel = make(chan string)
+var uiStory = ui.NewPar("")
+var uiInput = ui.NewPar("")
+var uiStatus = ui.NewPar("")
+var inputChannel = make(chan string)
+var inputData string
 
-func SetupFrontend() {
+func init() {
 	err := ui.Init()
 	if err != nil {
 		panic(err)
 	}
 	defer ui.Close()
 
-	input_data := ""
+	uiStory.X = 0
+	uiStory.Y = 0
+	uiStory.Height = 15
+	uiStory.Width = 80
+	uiStory.TextFgColor = ui.ColorWhite
+	uiStory.BorderLabel = "Story"
+	uiStory.BorderFg = ui.ColorCyan
 
-	ui_story = ui.NewPar("")
-	ui_story.X = 0
-	ui_story.Y = 0
-	ui_story.Height = 15
-	ui_story.Width = 80
-	ui_story.TextFgColor = ui.ColorWhite
-	ui_story.BorderLabel = "Story"
-	ui_story.BorderFg = ui.ColorCyan
+	uiInput.X = 0
+	uiInput.Y = 15
+	uiInput.Height = 3
+	uiInput.Width = 80
+	uiInput.TextFgColor = ui.ColorWhite
+	uiInput.BorderLabel = "Input"
+	uiInput.BorderFg = ui.ColorCyan
 
-	ui_input = ui.NewPar("")
-	ui_input.X = 0
-	ui_input.Y = 15
-	ui_input.Height = 3
-	ui_input.Width = 80
-	ui_input.TextFgColor = ui.ColorWhite
-	ui_input.BorderLabel = "Input"
-	ui_input.BorderFg = ui.ColorCyan
-
-	ui_status = ui.NewPar("Not Connected")
-	ui_status.X = 0
-	ui_status.Y = 18
-	ui_status.Height = 3
-	ui_status.Width = 80
-	ui_status.TextFgColor = ui.ColorWhite
-	ui_status.BorderLabel = "Status"
-	ui_status.BorderFg = ui.ColorCyan
+	uiStatus.Text = "Initializing..."
+	uiStatus.X = 0
+	uiStatus.Y = 18
+	uiStatus.Height = 3
+	uiStatus.Width = 80
+	uiStatus.TextFgColor = ui.ColorWhite
+	uiStatus.BorderLabel = "Status"
+	uiStatus.BorderFg = ui.ColorCyan
 
 	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
-		ui.StopLoop()
+		Exit()
 	})
 
 	ui.Handle("/sys/kbd", func(e ui.Event) {
@@ -52,21 +52,21 @@ func SetupFrontend() {
 		k, ok := e.Data.(ui.EvtKbd)
 		if ok {
 			if k.KeyStr == "C-8" {
-				l := len(input_data)
+				l := len(inputData)
 				if l >= 1 {
-					input_data = input_data[0 : l-1]
+					inputData = inputData[0 : l-1]
 				}
-			} else if k.KeyStr == "<enter>" && len(input_data) > 0 {
-				input_channel <- input_data
-				input_data = ""
+			} else if k.KeyStr == "<enter>" && len(inputData) > 0 {
+				inputChannel <- inputData
+				inputData = ""
 			} else if k.KeyStr == "<space>" {
-				input_data = input_data + " "
+				inputData = inputData + " "
 			} else if len(k.KeyStr) == 1 {
-				input_data = input_data + k.KeyStr
+				inputData = inputData + k.KeyStr
 			}
 		}
 
-		ui_input.Text = input_data
+		uiInput.Text = inputData
 		draw()
 	})
 
@@ -75,23 +75,33 @@ func SetupFrontend() {
 }
 
 func draw() {
-	ui.Render(ui_story, ui_input, ui_status)
+	ui.Render(uiStory, uiInput, uiStatus)
 }
 
+// Exit stops the ui loop
+func Exit() {
+	ui.StopLoop()
+}
+
+// ClearStory clears the story
 func ClearStory() {
-	ui_story.Text = ""
+	uiStory.Text = ""
 	draw()
 }
 
+// AddStoryPart adds a part to the story
 func AddStoryPart(part string) {
-	ui_story.Text = ui_story.Text + " " + part
+	uiStory.Text = uiStory.Text + " " + part
 	draw()
 }
 
+// GetInputChannel gets the inputChannel
 func GetInputChannel() chan string {
-	return input_channel
+	return inputChannel
 }
 
+// SetStatus sets the status
 func SetStatus(status string) {
-	ui_status.Text = status
+	uiStatus.Text = status
+	draw()
 }

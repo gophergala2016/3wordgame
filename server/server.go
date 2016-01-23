@@ -116,7 +116,7 @@ func main() {
 	var server string
 	var port int
 
-	flag.StringVar(&server, "server", "127.0.0.1", "Server host")
+	flag.StringVar(&server, "server", "", "Server host")
 	flag.IntVar(&port, "port", 6666, "Server port")
 	flag.Parse()
 
