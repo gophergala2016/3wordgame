@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"net"
-	"github.com/gophergala2016/3wordgame/validation"
+	"threewordgame/validation"
 )
 
 type Client struct {
@@ -39,8 +39,8 @@ func NewClient(connection net.Conn) *Client {
 	client := &Client{
 		incoming: make(chan string),
 		outgoing: make(chan string),
-		reader: reader,
-		writer: writer,
+		reader:   reader,
+		writer:   writer,
 	}
 
 	client.Listen()
@@ -49,8 +49,8 @@ func NewClient(connection net.Conn) *Client {
 }
 
 type ChatRoom struct {
-	clients []*Client
-	joins chan net.Conn
+	clients  []*Client
+	joins    chan net.Conn
 	incoming chan string
 	outgoing chan string
 }
@@ -64,7 +64,11 @@ func (chatRoom *ChatRoom) Broadcast(data string) {
 func (chatRoom *ChatRoom) Join(connection net.Conn) {
 	client := NewClient(connection)
 	chatRoom.clients = append(chatRoom.clients, client)
-	go func() { for { chatRoom.incoming <- <-client.incoming } }()
+	go func() {
+		for {
+			chatRoom.incoming <- <-client.incoming
+		}
+	}()
 }
 
 func (chatRoom *ChatRoom) Listen() {
@@ -85,8 +89,8 @@ func (chatRoom *ChatRoom) Listen() {
 
 func NewChatRoom() *ChatRoom {
 	chatRoom := &ChatRoom{
-		clients: make([]*Client, 0),
-		joins: make(chan net.Conn),
+		clients:  make([]*Client, 0),
+		joins:    make(chan net.Conn),
 		incoming: make(chan string),
 		outgoing: make(chan string),
 	}

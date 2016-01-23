@@ -1,13 +1,8 @@
-TODO
-
-=======
 # 3wordgame
 
+## Quick Start
+
 ```sh
-$ go run main.go  # and then in another tab
-$ nc localhost 6666
-woah
-woah
-wat
-wat
-```
+$ git clone https://github.com/gophergala2016/3wordgame.git $GOPATH/src/threewordgame
+$ go run server/server.go  # and then in another tab
+$ go run client/client.go
