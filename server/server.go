@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"net"
-	"threewordgame/validation"
+	"github.com/gophergala2016/3wordgame/validation"
 )
 
 type Client struct {
