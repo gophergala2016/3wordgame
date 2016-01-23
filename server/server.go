@@ -73,6 +73,7 @@ type ChatRoom struct {
 	joins    chan net.Conn
 	incoming chan Message
 	outgoing chan string
+	story string
 	last_msg_user_address string
 }
 
@@ -103,6 +104,7 @@ func (chatRoom *ChatRoom) Listen() {
 				msg, err := validation.ValidateMsg(data.text)
 				if err == nil && chatRoom.last_msg_user_address != data.address {
 					chatRoom.Broadcast(msg)
+					chatRoom.story = fmt.Sprintf("%s %s", chatRoom.story, msg)
 					chatRoom.last_msg_user_address = data.address
 				}
 			case conn := <-chatRoom.joins:
