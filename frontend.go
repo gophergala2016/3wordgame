@@ -59,6 +59,8 @@ func SetupFrontend() {
 			} else if k.KeyStr == "<enter>" && len(input_data) > 0 {
 				input_channel <- input_data
 				input_data = ""
+			} else if k.KeyStr == "<space>" {
+				input_data = input_data + " "
 			} else if len(k.KeyStr) == 1 {
 				input_data = input_data + k.KeyStr
 			}
