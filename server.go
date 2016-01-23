@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"net"
+	"github.com/gophergala2016/3wordgame/validation"
 )
 
 type Client struct {
@@ -71,7 +72,10 @@ func (chatRoom *ChatRoom) Listen() {
 		for {
 			select {
 			case data := <-chatRoom.incoming:
-				chatRoom.Broadcast(data)
+				msg, err := validation.ValidateMsg(data)
+				if err == nil {
+					chatRoom.Broadcast(msg)
+				}
 			case conn := <-chatRoom.joins:
 				chatRoom.Join(conn)
 			}
