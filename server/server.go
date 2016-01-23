@@ -2,10 +2,11 @@ package main
 
 import (
 	"bufio"
-	"net"
 	"github.com/gophergala2016/3wordgame/validation"
+	"net"
 )
 
+// Client struct
 type Client struct {
 	incoming chan string
 	outgoing chan string
@@ -13,6 +14,7 @@ type Client struct {
 	writer   *bufio.Writer
 }
 
+// Read line by line into the client.incoming
 func (client *Client) Read() {
 	for {
 		line, _ := client.reader.ReadString('\n')
@@ -20,6 +22,7 @@ func (client *Client) Read() {
 	}
 }
 
+// Write client outgoing data to the client writer
 func (client *Client) Write() {
 	for data := range client.outgoing {
 		client.writer.WriteString(data)
@@ -27,11 +30,13 @@ func (client *Client) Write() {
 	}
 }
 
+// Listen for reads and writes on the client
 func (client *Client) Listen() {
 	go client.Read()
 	go client.Write()
 }
 
+// NewClient returns new instance of client.
 func NewClient(connection net.Conn) *Client {
 	writer := bufio.NewWriter(connection)
 	reader := bufio.NewReader(connection)
@@ -48,6 +53,7 @@ func NewClient(connection net.Conn) *Client {
 	return client
 }
 
+// ChatRoom struct
 type ChatRoom struct {
 	clients  []*Client
 	joins    chan net.Conn
@@ -55,12 +61,14 @@ type ChatRoom struct {
 	outgoing chan string
 }
 
+// Broadcast data to all connected chatRoom.clients
 func (chatRoom *ChatRoom) Broadcast(data string) {
 	for _, client := range chatRoom.clients {
 		client.outgoing <- data
 	}
 }
 
+// Join attaches a new client to the chatRoom clients
 func (chatRoom *ChatRoom) Join(connection net.Conn) {
 	client := NewClient(connection)
 	chatRoom.clients = append(chatRoom.clients, client)
@@ -71,6 +79,7 @@ func (chatRoom *ChatRoom) Join(connection net.Conn) {
 	}()
 }
 
+// Listen to all incoming messages for the chatRoom
 func (chatRoom *ChatRoom) Listen() {
 	go func() {
 		for {
@@ -87,6 +96,7 @@ func (chatRoom *ChatRoom) Listen() {
 	}()
 }
 
+// NewChatRoom factories a ChatRoom instance
 func NewChatRoom() *ChatRoom {
 	chatRoom := &ChatRoom{
 		clients:  make([]*Client, 0),
