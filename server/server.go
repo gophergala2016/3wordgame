@@ -92,7 +92,7 @@ type ChatRoom struct {
 // Broadcast data to all connected chatRoom.clients
 func (chatRoom *ChatRoom) Broadcast(data string) {
 	for _, client := range chatRoom.clients {
-		client.outgoing <- data
+		client.outgoing <- fmt.Sprintf("%s\n", data)
 	}
 }
 
@@ -100,7 +100,7 @@ func (chatRoom *ChatRoom) Broadcast(data string) {
 func (chatRoom *ChatRoom) Join(connection net.Conn) {
 	client := NewClient(connection)
 	chatRoom.clients = append(chatRoom.clients, client)
-	client.outgoing <- chatRoom.story
+	client.outgoing <- fmt.Sprintf("%s\n", chatRoom.story)
 	go func() {
 		for {
 			chatRoom.incoming <- <-client.incoming
