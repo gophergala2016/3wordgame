@@ -21,19 +21,29 @@ func main() {
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", server, port))
 	if err != nil {
 		fmt.Println("Error dialing in.")
-		os.Exit(-1)
+		exit()
 	}
 
 	clear("Connected.")
 
 	for {
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
-
 		if err != nil {
 			fmt.Println("Error reading from Stdin.")
+			exit()
 		}
 
 		fmt.Fprintf(conn, input)
+	}
+
+	for {
+		message, err := bufio.NewReader(conn).ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from conn.")
+			exit()
+		}
+
+		fmt.Println(fmt.Sprintf("Read: %s", message))
 	}
 
 	fmt.Println("Exiting.")
@@ -43,4 +53,8 @@ func clear(msg string) {
 	print("\033[H\033[2J")
 	fmt.Println(msg)
 	fmt.Print("Input > ")
+}
+
+func exit() {
+	os.Exit(-1)
 }
