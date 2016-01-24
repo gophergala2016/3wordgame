@@ -8,6 +8,8 @@ import (
 	"os"
 )
 
+// var inputChannel = make(chan string)
+
 func main() {
 	var server string
 	var port int
@@ -22,17 +24,23 @@ func main() {
 		os.Exit(-1)
 	}
 
-	fmt.Println("Connected.")
+	clear("Connected.")
 
 	for {
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 
 		if err != nil {
-			fmt.Printf("Error reading from Stdin.")
+			fmt.Println("Error reading from Stdin.")
 		}
 
 		fmt.Fprintf(conn, input)
 	}
 
-	fmt.Println("Exiting!")
+	fmt.Println("Exiting.")
+}
+
+func clear(msg string) {
+	print("\033[H\033[2J")
+	fmt.Println(msg)
+	fmt.Print("Input > ")
 }

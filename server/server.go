@@ -12,13 +12,13 @@ import (
 type Client struct {
 	incoming chan Message
 	outgoing chan string
-	reader *bufio.Reader
-	writer *bufio.Writer
-	address string
+	reader   *bufio.Reader
+	writer   *bufio.Writer
+	address  string
 }
 
 type Message struct {
-	text string
+	text    string
 	address string
 }
 
@@ -27,9 +27,11 @@ func (client *Client) Read() {
 	for {
 		line, _ := client.reader.ReadString('\n')
 		client.incoming <- Message{
-				text: line,
-				address: client.address,
-			}
+			text:    line,
+			address: client.address,
+		}
+
+		fmt.Println("Client.Read %s", line)
 	}
 }
 
@@ -59,21 +61,23 @@ func NewClient(connection net.Conn) *Client {
 		outgoing: make(chan string),
 		reader:   reader,
 		writer:   writer,
-		address: address,
+		address:  address,
 	}
 
 	client.Listen()
+
+	fmt.Println("NewClient")
 
 	return client
 }
 
 // ChatRoom struct
 type ChatRoom struct {
-	clients  []*Client
-	joins    chan net.Conn
-	incoming chan Message
-	outgoing chan string
-	story string
+	clients               []*Client
+	joins                 chan net.Conn
+	incoming              chan Message
+	outgoing              chan string
+	story                 string
 	last_msg_user_address string
 }
 
@@ -113,6 +117,7 @@ func (chatRoom *ChatRoom) Listen() {
 					chatRoom.last_msg_user_address = data.address
 				}
 			case conn := <-chatRoom.joins:
+				fmt.Println("chatRoom.join")
 				chatRoom.Join(conn)
 			}
 		}
@@ -130,6 +135,8 @@ func NewChatRoom() *ChatRoom {
 
 	chatRoom.Listen()
 
+	fmt.Println("NewChatRoom")
+
 	return chatRoom
 }
 
@@ -137,7 +144,7 @@ func main() {
 	var server string
 	var port int
 
-	flag.StringVar(&server, "server", "127.0.0.1", "Server host")
+	flag.StringVar(&server, "server", "", "Server host")
 	flag.IntVar(&port, "port", 6666, "Server port")
 	flag.Parse()
 
