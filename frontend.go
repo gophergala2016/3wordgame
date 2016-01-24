@@ -1,8 +1,8 @@
 package threewordgame
 
 import (
-	"fmt"
 	ui "github.com/gizak/termui"
+	"time"
 )
 
 var uiStory = ui.NewPar("")
@@ -34,7 +34,7 @@ func init() {
 	uiInput.BorderLabel = "Input"
 	uiInput.BorderFg = ui.ColorCyan
 
-	uiStatus.Text = "Initializing..."
+	uiStatus.Text = "Initializing"
 	uiStatus.X = 0
 	uiStatus.Y = 18
 	uiStatus.Height = 3
@@ -72,6 +72,23 @@ func init() {
 
 	draw()
 	ui.Loop()
+}
+
+func Test() {
+	uiStatus.Text = "Initializing."
+	draw()
+	time.Sleep(time.Second)
+
+	uiStatus.Text = "Initializing.."
+	draw()
+	time.Sleep(time.Second)
+
+	uiStatus.Text = "Initializing..."
+	draw()
+	time.Sleep(time.Second)
+
+	uiStatus.Text = "Initializing...."
+	draw()
 }
 
 func draw() {

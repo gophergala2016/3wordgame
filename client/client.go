@@ -17,6 +17,8 @@ func main() {
 	flag.IntVar(&port, "port", 6666, "Server port")
 	flag.Parse()
 
+	threewordgame.Test()
+
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", server, port))
 	if err != nil {
 		threewordgame.SetStatus(fmt.Sprintf("Error dialing in."))
