@@ -10,11 +10,12 @@ import (
 
 // Client struct
 type Client struct {
-	incoming chan Message
-	outgoing chan string
-	reader   *bufio.Reader
-	writer   *bufio.Writer
-	address  string
+	incoming   chan Message
+	outgoing   chan string
+	reader     *bufio.Reader
+	writer     *bufio.Writer
+	address    string
+	connection net.Conn
 }
 
 type Message struct {
@@ -25,13 +26,20 @@ type Message struct {
 // Read line by line into the client.incoming
 func (client *Client) Read() {
 	for {
-		line, _ := client.reader.ReadString('\n')
+		line, err := client.reader.ReadString('\n')
+		if err != nil {
+			client.connection.Close()
+			fmt.Println(fmt.Sprintf("Read error %s", err))
+			return
+		}
+
 		client.incoming <- Message{
 			text:    line,
 			address: client.address,
 		}
 
 		fmt.Println(fmt.Sprintf("Client.Read %s", line))
+		return
 	}
 }
 
@@ -57,11 +65,12 @@ func NewClient(connection net.Conn) *Client {
 	address := connection.RemoteAddr().String()
 
 	client := &Client{
-		incoming: make(chan Message),
-		outgoing: make(chan string),
-		reader:   reader,
-		writer:   writer,
-		address:  address,
+		incoming:   make(chan Message),
+		outgoing:   make(chan string),
+		reader:     reader,
+		writer:     writer,
+		address:    address,
+		connection: connection,
 	}
 
 	client.Listen()
