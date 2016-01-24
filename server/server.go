@@ -88,6 +88,7 @@ func (chatRoom *ChatRoom) Broadcast(data string) {
 func (chatRoom *ChatRoom) Join(connection net.Conn) {
 	client := NewClient(connection)
 	chatRoom.clients = append(chatRoom.clients, client)
+	client.outgoing <- chatRoom.story
 	go func() {
 		for {
 			chatRoom.incoming <- <-client.incoming
@@ -104,7 +105,11 @@ func (chatRoom *ChatRoom) Listen() {
 				msg, err := validation.ValidateMsg(data.text)
 				if err == nil && chatRoom.last_msg_user_address != data.address {
 					chatRoom.Broadcast(msg)
-					chatRoom.story = fmt.Sprintf("%s %s", chatRoom.story, msg)
+					if len(chatRoom.story) == 0 {
+						chatRoom.story = msg
+					} else {
+						chatRoom.story = fmt.Sprintf("%s %s", chatRoom.story, msg)
+					}
 					chatRoom.last_msg_user_address = data.address
 				}
 			case conn := <-chatRoom.joins:
