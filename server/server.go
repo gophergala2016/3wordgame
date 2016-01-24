@@ -30,7 +30,7 @@ func (client *Client) Read() {
 		if err != nil {
 			client.connection.Close()
 			fmt.Println(fmt.Sprintf("Read error %s", err))
-			return
+			break
 		}
 
 		client.incoming <- Message{
@@ -39,7 +39,6 @@ func (client *Client) Read() {
 		}
 
 		fmt.Println(fmt.Sprintf("Client.Read %s", line))
-		return
 	}
 }
 
