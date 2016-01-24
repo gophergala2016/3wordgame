@@ -17,26 +17,26 @@ func main() {
 	flag.IntVar(&port, "port", 6666, "Server port")
 	flag.Parse()
 
-	threewordgame.Test()
-
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", server, port))
 	if err != nil {
-		threewordgame.SetStatus(fmt.Sprintf("Error dialing in."))
+		threewordgame.Update("Error dialing in.")
 		threewordgame.Exit()
 		os.Exit(-1)
 	}
 
-	threewordgame.SetStatus(fmt.Sprintf("Connected."))
+	threewordgame.Update("Connected.")
+	// threewordgame.SendCustomEvt("/update/status", "Connected.")
+	// threewordgame.Update(fmt.Sprintf("Connected."))
 
 	for {
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 
 		if err != nil {
-			threewordgame.SetStatus(fmt.Sprintf("Error reading from Stdin."))
+			threewordgame.Update("Error reading from Stdin.")
 		}
 
 		fmt.Fprintf(conn, input)
 	}
 
-	threewordgame.SetStatus(fmt.Sprintf("Exiting!"))
+	threewordgame.Update("Exiting!")
 }

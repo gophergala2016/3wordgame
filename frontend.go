@@ -2,7 +2,6 @@ package threewordgame
 
 import (
 	ui "github.com/gizak/termui"
-	"time"
 )
 
 var uiStory = ui.NewPar("")
@@ -70,29 +69,22 @@ func init() {
 		draw()
 	})
 
+	ui.Handle("/update/status", func(e ui.Event) {
+		msg := e.Data.(string)
+		uiStatus.Text = msg
+		draw()
+	})
+
 	draw()
 	ui.Loop()
 }
 
-func Test() {
-	uiStatus.Text = "Initializing."
-	draw()
-	time.Sleep(time.Second)
-
-	uiStatus.Text = "Initializing.."
-	draw()
-	time.Sleep(time.Second)
-
-	uiStatus.Text = "Initializing..."
-	draw()
-	time.Sleep(time.Second)
-
-	uiStatus.Text = "Initializing...."
-	draw()
-}
-
 func draw() {
 	ui.Render(uiStory, uiInput, uiStatus)
+}
+
+func Update(msg string) {
+	ui.SendCustomEvt("/update/status", msg)
 }
 
 // Exit stops the ui loop
