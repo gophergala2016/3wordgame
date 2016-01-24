@@ -36,4 +36,13 @@ func TestValidation(t *testing.T) {
 	if msg != "one two three\n" {
 		t.Errorf("one two  three\\n should've become one two three\\n, but instead became %s", msg)
 	}
+
+	msg, err = ValidateMsg("one. two  three\n")
+	if err != nil {
+		t.Errorf("one. two three\\n should've passed validation")
+	}
+
+	if msg != "one. two three\n" {
+		t.Errorf("one. two three\\n should've stayed that, but instead became %s", msg)
+	}
 }

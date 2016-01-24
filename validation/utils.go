@@ -5,9 +5,9 @@ import (
 	"errors"
 )
 
-var msg_validator *regexp.Regexp = regexp.MustCompile(`^\w+\W+\w+\W+\w+\n$`)
+var msg_validator *regexp.Regexp = regexp.MustCompile(`^\S+\s+\S+\s+\S+\n$`)
 
-var msg_formatter *regexp.Regexp = regexp.MustCompile(`\W{2,}`)
+var msg_formatter *regexp.Regexp = regexp.MustCompile(`\s{2,}`)
 
 func ValidateMsg (msg string) (string, error) {
 	if msg_validator.MatchString(msg) == true {
