@@ -31,7 +31,7 @@ func (client *Client) Read() {
 			address: client.address,
 		}
 
-		fmt.Println("Client.Read %s", line)
+		fmt.Println(fmt.Sprintf("Client.Read %s", line))
 	}
 }
 
@@ -108,6 +108,8 @@ func (chatRoom *ChatRoom) Listen() {
 			case data := <-chatRoom.incoming:
 				msg, err := validation.ValidateMsg(data.text)
 				if err == nil && chatRoom.last_msg_user_address != data.address {
+					fmt.Println(fmt.Sprintf("chatRoom.Broadcast %s", msg))
+
 					chatRoom.Broadcast(msg)
 					if len(chatRoom.story) == 0 {
 						chatRoom.story = msg
