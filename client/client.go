@@ -6,9 +6,49 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"github.com/gophergala2016/3wordgame/validation"
 )
 
 // var inputChannel = make(chan string)
+
+var story string
+
+func Read(conn net.Conn) {
+	for {
+		message, err := bufio.NewReader(conn).ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from conn.")
+			exit()
+		}
+		fmt.Println("Succesfully read from conn.")
+
+		story = fmt.Sprintf("%s %s", story, validation.StripNewLine(message))
+
+		if len(story) == 0 {
+			clear(fmt.Sprintf("No story yet..."))
+		} else {
+			clear(fmt.Sprintf("Read: %s", story))
+		}
+
+	}
+}
+
+func Write(conn net.Conn) {
+	for {
+		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from Stdin.")
+			exit()
+		}
+		fmt.Println("Succesfully read from Stdin.")
+		fmt.Fprintf(conn, input)
+	}
+}
+
+func Listen(conn net.Conn) {
+	go Read(conn)
+	Write(conn)
+}
 
 func main() {
 	var server string
@@ -26,25 +66,7 @@ func main() {
 
 	clear("Connected.")
 
-	for {
-		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading from Stdin.")
-			exit()
-		}
-
-		fmt.Fprintf(conn, input)
-	}
-
-	for {
-		message, err := bufio.NewReader(conn).ReadString('\n')
-		if err != nil {
-			fmt.Println("Error reading from conn.")
-			exit()
-		}
-
-		fmt.Println(fmt.Sprintf("Read: %s", message))
-	}
+	Listen(conn)
 
 	fmt.Println("Exiting.")
 }

@@ -19,3 +19,7 @@ func ValidateMsg (msg string) (string, error) {
 		return msg, errors.New("Invalid message")
 	}
 }
+
+func StripNewLine(msg string) (string) {
+	return newline.ReplaceAllString(msg, "")
+}
