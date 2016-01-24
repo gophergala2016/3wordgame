@@ -20,17 +20,11 @@ func Read(conn net.Conn) {
 			fmt.Println("Error reading from conn.")
 			exit()
 		}
-		fmt.Println("Succesfully read from conn.")
 
 		story = fmt.Sprintf("%s %s", story, validation.StripNewLine(message))
 		story = strings.Trim(story, " \n")
 
-		if len(story) == 0 {
-			clear(fmt.Sprintf("No story yet..."))
-		} else {
-			clear(fmt.Sprintf("Read: %s", story))
-		}
-
+		showStory()
 	}
 }
 
@@ -41,8 +35,8 @@ func Write(conn net.Conn) {
 			fmt.Println("Error reading from Stdin.")
 			exit()
 		}
-		fmt.Println("Succesfully read from Stdin.")
 		fmt.Fprintf(conn, input)
+		showStory()
 	}
 }
 
@@ -76,6 +70,14 @@ func clear(msg string) {
 	print("\033[H\033[2J")
 	fmt.Println(msg)
 	fmt.Print("Input > ")
+}
+
+func showStory() {
+	if len(story) == 0 {
+		clear(fmt.Sprintf("No story yet..."))
+	} else {
+		clear(fmt.Sprintf("Story so far: %s", story))
+	}
 }
 
 func exit() {
