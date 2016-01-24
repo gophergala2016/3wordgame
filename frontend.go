@@ -20,7 +20,6 @@ func init() {
 	uiStory.X = 0
 	uiStory.Y = 0
 	uiStory.Height = 15
-	uiStory.Width = 80
 	uiStory.TextFgColor = ui.ColorWhite
 	uiStory.BorderLabel = "Story"
 	uiStory.BorderFg = ui.ColorCyan
@@ -28,7 +27,6 @@ func init() {
 	uiInput.X = 0
 	uiInput.Y = 15
 	uiInput.Height = 3
-	uiInput.Width = 80
 	uiInput.TextFgColor = ui.ColorWhite
 	uiInput.BorderLabel = "Input"
 	uiInput.BorderFg = ui.ColorCyan
@@ -37,10 +35,20 @@ func init() {
 	uiStatus.X = 0
 	uiStatus.Y = 18
 	uiStatus.Height = 3
-	uiStatus.Width = 80
 	uiStatus.TextFgColor = ui.ColorWhite
 	uiStatus.BorderLabel = "Status"
 	uiStatus.BorderFg = ui.ColorCyan
+
+	ui.Body.AddRows(
+		ui.NewRow(
+			ui.NewCol(12, 0, uiStory)),
+		ui.NewRow(
+			ui.NewCol(12, 0, uiInput)),
+		ui.NewRow(
+			ui.NewCol(12, 0, uiStatus)))
+
+	// calculate layout
+	ui.Body.Align()
 
 	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
 		Exit()
@@ -67,6 +75,12 @@ func init() {
 
 		uiInput.Text = inputData
 		draw()
+	})
+
+	ui.Handle("/sys/wnd/resize", func(e ui.Event) {
+		ui.Body.Width = ui.TermWidth()
+		ui.Body.Align()
+		ui.Render(ui.Body)
 	})
 
 	ui.Handle("/update/status", func(e ui.Event) {
