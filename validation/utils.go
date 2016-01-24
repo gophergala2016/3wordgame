@@ -7,11 +7,14 @@ import (
 
 var msg_validator *regexp.Regexp = regexp.MustCompile(`^\S+\s+\S+\s+\S+\n$`)
 
-var msg_formatter *regexp.Regexp = regexp.MustCompile(`\s{2,}`)
+var multiple_spaces *regexp.Regexp = regexp.MustCompile(`\s{2,}`)
+var newline *regexp.Regexp = regexp.MustCompile(`\n$`)
 
 func ValidateMsg (msg string) (string, error) {
 	if msg_validator.MatchString(msg) == true {
-		return msg_formatter.ReplaceAllString(msg, " "), nil
+		msg = multiple_spaces.ReplaceAllString(msg, " ")
+		msg = newline.ReplaceAllString(msg, "")
+		return msg, nil
 	} else {
 		return msg, errors.New("Invalid message")
 	}
