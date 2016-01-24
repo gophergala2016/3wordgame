@@ -4,13 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"github.com/gophergala2016/3wordgame/validation"
 	"net"
 	"os"
-	"github.com/gophergala2016/3wordgame/validation"
 	"strings"
+	"time"
 )
-
-// var inputChannel = make(chan string)
 
 var story string
 
@@ -60,7 +59,7 @@ func main() {
 	flag.IntVar(&port, "port", 6666, "Server port")
 	flag.Parse()
 
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", server, port))
+	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", server, port), time.Second*3)
 	if err != nil {
 		fmt.Println("Error dialing in.")
 		exit()
