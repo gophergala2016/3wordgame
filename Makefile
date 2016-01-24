@@ -1,13 +1,10 @@
-all: client server frontend
+all: client server
 
-client: client/*.go *.go
-	go build -o bin/client client/client.go
+client: 
+	go build -o bin/client client.go
 
-frontend: frontend.go *.go
-	go build -o bin/frontend client/frontend.go
-
-server: server/*.go *.go
-	go build -o bin/server server/server.go
+server:
+	go build -o bin/server server.go
 
 clean:
 	rm -rf bin/client bin/frontend bin/server
