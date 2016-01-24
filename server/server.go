@@ -20,6 +20,7 @@ type Client struct {
 func (client *Client) Read() {
 	for {
 		line, _ := client.reader.ReadString('\n')
+		fmt.Println("Client.Read %s", line)
 		client.incoming <- line
 	}
 }
@@ -51,6 +52,8 @@ func NewClient(connection net.Conn) *Client {
 	}
 
 	client.Listen()
+
+	fmt.Println("NewClient")
 
 	return client
 }
@@ -89,9 +92,13 @@ func (chatRoom *ChatRoom) Listen() {
 			case data := <-chatRoom.incoming:
 				msg, err := validation.ValidateMsg(data)
 				if err == nil {
+					fmt.Println("chatRoom.Broadcast %s", msg)
 					chatRoom.Broadcast(msg)
+				} else {
+					fmt.Println("chatRoom.Broadcast failed validation: %s", msg)
 				}
 			case conn := <-chatRoom.joins:
+				fmt.Println("chatRoom.join")
 				chatRoom.Join(conn)
 			}
 		}
@@ -108,6 +115,8 @@ func NewChatRoom() *ChatRoom {
 	}
 
 	chatRoom.Listen()
+
+	fmt.Println("NewChatRoom")
 
 	return chatRoom
 }
