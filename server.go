@@ -155,7 +155,7 @@ func main() {
 	var port int
 
 	flag.StringVar(&server, "server", "", "Server host")
-	flag.IntVar(&port, "port", 6666, "Server port")
+	flag.IntVar(&port, "port", 8080, "Server port")
 	flag.Parse()
 
 	listener, _ := net.Listen("tcp", fmt.Sprintf("%s:%d", server, port))

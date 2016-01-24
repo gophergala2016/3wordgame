@@ -1,10 +1,10 @@
 package main
 
 import (
+	"./validation"
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/gophergala2016/3wordgame/validation"
 	"net"
 	"os"
 	"strings"
@@ -49,8 +49,8 @@ func main() {
 	var server string
 	var port int
 
-	flag.StringVar(&server, "server", "127.0.0.1", "Server host")
-	flag.IntVar(&port, "port", 6666, "Server port")
+	flag.StringVar(&server, "server", "3wordgame.com", "Server host")
+	flag.IntVar(&port, "port", 8080, "Server port")
 	flag.Parse()
 
 	conn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", server, port), time.Second*3)
