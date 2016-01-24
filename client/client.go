@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"github.com/gophergala2016/3wordgame/validation"
+	"strings"
 )
 
 // var inputChannel = make(chan string)
@@ -23,6 +24,7 @@ func Read(conn net.Conn) {
 		fmt.Println("Succesfully read from conn.")
 
 		story = fmt.Sprintf("%s %s", story, validation.StripNewLine(message))
+		story = strings.Trim(story, " \n")
 
 		if len(story) == 0 {
 			clear(fmt.Sprintf("No story yet..."))
