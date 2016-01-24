@@ -1,10 +1,10 @@
 package main
 
 import (
+	"./validation"
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/gophergala2016/3wordgame/validation"
 	"net"
 )
 
