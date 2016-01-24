@@ -13,7 +13,7 @@ import (
 
 var story string
 
-func Read(conn net.Conn) {
+func read(conn net.Conn) {
 	for {
 		message, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
@@ -28,7 +28,7 @@ func Read(conn net.Conn) {
 	}
 }
 
-func Write(conn net.Conn) {
+func write(conn net.Conn) {
 	for {
 		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
 		if err != nil {
@@ -40,9 +40,9 @@ func Write(conn net.Conn) {
 	}
 }
 
-func Listen(conn net.Conn) {
-	go Read(conn)
-	Write(conn)
+func listen(conn net.Conn) {
+	go read(conn)
+	write(conn)
 }
 
 func main() {
@@ -61,7 +61,7 @@ func main() {
 
 	clear("Connected.")
 
-	Listen(conn)
+	listen(conn)
 
 	fmt.Println("Exiting.")
 }
