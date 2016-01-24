@@ -10,7 +10,7 @@ import (
 
 // Client struct
 type Client struct {
-	incoming   chan Message
+	incoming   chan message
 	outgoing   chan string
 	reader     *bufio.Reader
 	writer     *bufio.Writer
@@ -18,7 +18,7 @@ type Client struct {
 	connection net.Conn
 }
 
-type Message struct {
+type message struct {
 	text    string
 	address string
 }
@@ -33,7 +33,7 @@ func (client *Client) Read() {
 			break
 		}
 
-		client.incoming <- Message{
+		client.incoming <- message{
 			text:    line,
 			address: client.address,
 		}
@@ -64,7 +64,7 @@ func NewClient(connection net.Conn) *Client {
 	address := connection.RemoteAddr().String()
 
 	client := &Client{
-		incoming:   make(chan Message),
+		incoming:   make(chan message),
 		outgoing:   make(chan string),
 		reader:     reader,
 		writer:     writer,
@@ -81,12 +81,12 @@ func NewClient(connection net.Conn) *Client {
 
 // ChatRoom struct
 type ChatRoom struct {
-	clients               []*Client
-	joins                 chan net.Conn
-	incoming              chan Message
-	outgoing              chan string
-	story                 string
-	last_msg_user_address string
+	clients            []*Client
+	joins              chan net.Conn
+	incoming           chan message
+	outgoing           chan string
+	story              string
+	lastMsgUserAddress string
 }
 
 // Broadcast data to all connected chatRoom.clients
@@ -115,7 +115,7 @@ func (chatRoom *ChatRoom) Listen() {
 			select {
 			case data := <-chatRoom.incoming:
 				msg, err := validation.ValidateMsg(data.text)
-				if err == nil && chatRoom.last_msg_user_address != data.address {
+				if err == nil && chatRoom.lastMsgUserAddress != data.address {
 					fmt.Println(fmt.Sprintf("chatRoom.Broadcast %s", msg))
 
 					chatRoom.Broadcast(msg)
@@ -124,7 +124,7 @@ func (chatRoom *ChatRoom) Listen() {
 					} else {
 						chatRoom.story = fmt.Sprintf("%s %s", chatRoom.story, msg)
 					}
-					chatRoom.last_msg_user_address = data.address
+					chatRoom.lastMsgUserAddress = data.address
 				}
 			case conn := <-chatRoom.joins:
 				fmt.Println("chatRoom.join")
@@ -139,7 +139,7 @@ func NewChatRoom() *ChatRoom {
 	chatRoom := &ChatRoom{
 		clients:  make([]*Client, 0),
 		joins:    make(chan net.Conn),
-		incoming: make(chan Message),
+		incoming: make(chan message),
 		outgoing: make(chan string),
 	}
 
