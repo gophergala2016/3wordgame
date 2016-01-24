@@ -108,7 +108,6 @@ func main() {
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", server, port))
 	if err != nil {
 		ui.SendCustomEvt("/update/status", "Error dialing in.")
-		exit()
 	}
 
 	ui.SendCustomEvt("/update/status", "Connected.")
@@ -132,5 +131,5 @@ func draw() {
 
 func exit() {
 	ui.StopLoop()
-	os.Exit(-1)
+	os.Exit(0)
 }
